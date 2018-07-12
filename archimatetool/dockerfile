@@ -1,0 +1,12 @@
+FROM anapsix/alpine-java
+MAINTAINER rachel <liuruibnu@gmail.com>
+
+# When using COPY with more than one source file, the destination must be a directory and end with a /
+# install Archimate Tools
+ADD ./Archi-Linux64-4.2.tgz /app/
+RUN ls -al /app/
+
+# copy git plugin;
+COPY ./plugin/*.jar /app/Archi/plugins/
+# debug 
+RUN ls -al /app/Archi
