@@ -1,0 +1,26 @@
+FROM centos:7
+MAINTAINER rachel <liuruibnu@gmail.com>
+
+# config the agent
+RUN mkdir .aws
+WORKDIR .aws
+COPY config  .aws/
+COPY credentials .aws/
+COPY agentconfig.json .aws/
+RUN pwd
+RUN ls .aws
+
+# Download the agent
+RUN curl -o AmazonCloudWatchAgent.zip https://s3.amazonaws.com/amazoncloudwatch-agent/linux/amd64/latest/AmazonCloudWatchAgent.zip
+RUN yum -y install zip unzip
+RUN unzip AmazonCloudWatchAgent.zip
+RUN yum -y install amazon-cloudwatch-agent.rpm ; systemctl enable amazon-cloudwatch-agent
+RUN systemctl list-unit-files --type service
+
+CMD [ "/sbin/init" ]
+#RUN systemctl start amazon-cloudwatch-agent.service
+#RUN yum -y install sudo
+#RUN service start amazon-cloudwatch-agent
+#RUN sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m onPremise -c file:~/.aws/agentconfig.json -s
+
+#CMD ["/bin/bash","/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl","-a","fetch-config","-m","onPremise","-c","file:~/.aws/agentconfig.json","-s"]
